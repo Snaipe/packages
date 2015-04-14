@@ -1,0 +1,36 @@
+pkgname=libcsptr-git
+pkgver=v2.0.0.r4.gfc8aaec
+pkgrel=1
+pkgdesc="A smart pointers library for the C programming language"
+arch=('i686' 'x86_64')
+url="http://github.com/Snaipe/c-smart-pointers.git"
+license=('MIT')
+makedepends=('git')
+provides=('libcsptr')
+conflicts=('libcsptr')
+
+source=("$pkgname"::"git://github.com/Snaipe/c-smart-pointers.git")
+md5sums=('SKIP')
+
+pkgver() {
+  cd "${srcdir}/${pkgname}"
+  git describe --long | sed 's/\([^-]*-g\)/r\1/;s/-/./g'
+  git describe --long | sed 's/\([^-]*-g\)/r\1/;s/-/./g' > OUTVER
+}
+
+build() {
+  cd ${srcdir}/${pkgname}
+  ./autogen.sh
+  ./configure --prefix=/usr
+  make
+}
+
+check() {
+  cd "${srcdir}/${pkgname}"
+  make check
+}
+
+package() {
+  cd ${srcdir}/${pkgname}
+  make DESTDIR="$pkgdir/" install
+}
